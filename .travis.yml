@@ -1,0 +1,33 @@
+language: julia
+os:
+  - linux
+julia:
+  - 1.0
+notifications:
+  email: false
+git:
+  depth: 99999999
+cache:
+  timeout: 1000
+  directories:
+    - downloads
+env:
+  global:
+    - BINARYBUILDER_DOWNLOADS_CACHE=downloads
+    - BINARYBUILDER_AUTOMATIC_APPLE=true
+sudo: required
+before_script:
+  - julia -e 'import Pkg; Pkg.add(Pkg.PackageSpec(url="https://github.com/JuliaPackaging/BinaryBuilder.jl", rev="master"))'
+  - julia -e 'import Pkg; Pkg.add("BinaryProvider")'
+script:
+  - julia build_tarballs.jl
+deploy:
+  provider: releases
+  api_key:
+    secure: NJBvJXoRWadXYgQpJRXw2zabRjmUJHAIoo2a568aVZmnwzU0MOiqEiwQdrqFVqnVjG3mdLrpmIHZrHQ84lLnEO8uE2L5CT8TDcMsqD9nejbgQc6s8JPn9roeWdRDXAtVgvn6zclCCC/FRBFSr/rMllQ+Lf2Au5ucDJwxT8umy62w96x19xqAoj24kcVar/lW8/8LW/5tdVJ/NzEXncqpQvsWl5LNR1t4pJ+h3F0ntKLZ0D/cHaqusSF97tsreJxoabNgp0muAfJyUCVKdHP0Vh+R7QhJlrojkzRAaB4hQ3NtmZBGt7Lql9tC2IzngR/eXAfzqPQ/h7sf2cBWV5/bm3eV3s/eWeL0jAY9f8U5MTGn5POFGw6TVyducw2vQPVTIcSS7FQNBPik9kN+lzQLuVxP61ZeDrnMwDwREq28Axe1zWVURJxKAHj9ZziW3aGMnZDCjol6CsyY7mRbQAHydy3NTYrvWBAn9or5KinyeOPL8TK43yrcPjlUg0XGd/5tEdsZ7ZaMSnOpFZcVznhHApJWqb7Q/ml+01cJ4JFSvqzYTnYhN4B65OMSSYqRKC01iwwxAU9S2nlPWmCrPl/fx9wxJZMY2WjhnSooDHJ+5qLKuoE0xMllRQCCuBFad+2R7xvDDaNjn7nVrZvv8Z7HjSED2aBI6tP1BjZ/Fq8PoMg=
+  file_glob: true
+  file: products/*
+  skip_cleanup: true
+  on:
+    repo: JuliaLinearAlgebra/ArpackBuilder
+    tags: true
